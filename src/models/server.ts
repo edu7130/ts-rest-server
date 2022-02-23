@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import 'colors';
 import testRouter from '../routers/test';
+import { db } from '../db/connection';
 
 export class Server {
     private app: Application;
@@ -19,8 +20,14 @@ export class Server {
         this.routes();
     }
 
-    db() {
-        //your DB Connection here.
+    async db() {
+        try {
+            await db.authenticate();
+            console.log('DB Online'.green);
+        }
+        catch (err) {
+            console.error(err);
+        }
     }
 
     middlewares() {
@@ -36,7 +43,6 @@ export class Server {
         console.clear();
         this.app.listen(this.port, () => {
             console.log(`Server on port ${this.port}`, `http://localhost:${this.port}`.cyan);
-
         })
     }
 
